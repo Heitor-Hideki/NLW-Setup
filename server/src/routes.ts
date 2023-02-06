@@ -66,7 +66,7 @@ export async function appRoutes(app: FastifyInstance) {
 
         const completedHabits = day?.dayHabits.map(dayHabit => {
             return dayHabit.habit_id
-        })
+        }) ?? []
 
         return {
             possibleHabits,
@@ -113,21 +113,22 @@ export async function appRoutes(app: FastifyInstance) {
 
         //se o hábito está completo, remove a marcação
         if (dayHabit) {
-            await prisma.dayHabit.delete({
+            return await prisma.dayHabit.delete({
                 where: {
                     id: dayHabit.id,
                 }
             })
-        }
+        } 
 
-        // completar o hábito
-
+        
         await prisma.dayHabit.create({
             data: {
                 day_id: day.id,
                 habit_id: id,
             }
         })
+    
+
     })
 
     app.get('/summary', async () => {
